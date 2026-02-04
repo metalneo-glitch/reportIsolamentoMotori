@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Isolamento Motori</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="title">
+        <h1>Report Isolamento Motori</h1>
+        <div class="subtitle" id="subtitle">Nessun report caricato. Crea un nuovo report per iniziare.</div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="toolbar-group">
+        <button id="btn-new" class="btn btn-primary">🆕 Nuovo</button>
+        <button id="btn-open" class="btn">📂 Apri</button>
+        <input id="file-input" type="file" accept="application/json" hidden />
+      </div>
+      <div class="toolbar-group">
+        <button id="btn-save-json" class="btn" data-requires-model>💾 Salva JSON</button>
+        <button id="btn-save-pdf" class="btn btn-primary" data-requires-model>📄 Esporta PDF</button>
+      </div>
+      <div class="toolbar-group">
+        <details class="toolbar-menu">
+          <summary class="btn">⚙️ Altro</summary>
+          <div class="toolbar-menu-panel">
+            <button id="btn-logo" class="btn" data-requires-model>🖼️ Aggiungi logo</button>
+            <div class="small-muted" id="logo-label">Nessun logo</div>
+            <button id="btn-reset" class="btn">♻️ Reset report</button>
+            <button id="btn-clear-motors" class="btn" data-requires-model>🧹 Svuota motori</button>
+          </div>
+          <input id="logo-input" type="file" accept="image/png, image/jpeg" hidden />
+        </details>
+
+        <details class="toolbar-menu">
+          <summary class="btn">❓ Help</summary>
+          <div class="toolbar-menu-panel">
+            <button id="btn-help-pi" class="btn">📊 Valutazione Indice di Polarizzazione (PI)</button>
+            <button id="btn-help-ir" class="btn">📊 Valutazione Resistenza di Isolamento (IR)</button>
+            <button id="btn-help-voltage" class="btn">⚡ Tensione di prova</button>
+            <button id="btn-help-guide" class="btn">🧭 Guida rapida prova</button>
+          </div>
+        </details>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Dati generali</div>
+      </div>
+      <div class="meta-grid">
+        <label>
+          <span>Azienda / Cliente</span>
+          <input id="azienda" type="text" placeholder="Es. Officina Rossi" data-requires-model />
+        </label>
+        <label>
+          <span>Impianto / Linea</span>
+          <input id="impianto" type="text" placeholder="Es. Linea 3" data-requires-model />
+        </label>
+        <label>
+          <span>Data ispezione</span>
+          <input id="data" type="date" data-requires-model />
+        </label>
+        <label>
+          <span>Tecnico</span>
+          <input id="tecnico" type="text" placeholder="Nome tecnico" data-requires-model />
+        </label>
+        <label class="full">
+          <span>Strumento utilizzato</span>
+          <input id="strumento" type="text" placeholder="Es. Fluke 1507" data-requires-model />
+        </label>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Dati motore</div>
+        <div class="panel-actions">
+          <button id="aggiungi" class="btn btn-primary" data-requires-model>➕ Aggiungi motore</button>
+          <button id="reset" class="btn" data-requires-model>🧽 Pulisci campi</button>
+        </div>
+      </div>
+      <div class="meta-grid">
+        <label>
+          <span>Identificativo</span>
+          <input id="identificativo" type="text" placeholder="Es. MTR-01" data-requires-model />
+        </label>
+        <label>
+          <span>Marca</span>
+          <input id="marca" type="text" placeholder="Es. Speroni" data-requires-model />
+        </label>
+        <label>
+          <span>Modello</span>
+          <input id="modello" type="text" placeholder="Es. B363B ALL" data-requires-model />
+        </label>
+        <label>
+          <span>Potenza (kW)</span>
+          <input id="potenza" type="number" placeholder="Es. 15" data-requires-model />
+        </label>
+        <label>
+          <span>Tensione (V)</span>
+          <input id="tensione" type="number" placeholder="Es. 400" data-requires-model />
+        </label>
+        <label>
+          <span>Corrente nominale (A)</span>
+          <input id="corrente-nominale" type="number" placeholder="Es. 28" data-requires-model />
+        </label>
+        <label>
+          <span>Tipo raffreddamento</span>
+          <input id="tipo-raffreddamento" type="text" placeholder="Es. Aria" data-requires-model />
+        </label>
+        <label>
+          <span>Tensione di prova impostata (V)</span>
+          <input id="tensione-prova" type="number" placeholder="Es. 500 V" data-requires-model />
+        </label>
+        <label>
+          <span>Resistenza isolamento (MΩ)</span>
+          <input id="resistenza" type="number" placeholder="Es. 250 V" data-requires-model />
+        </label>
+        <label>
+          <span>Indice di polarizzazione</span>
+          <input id="indice-polarizzazione" type="number" placeholder="Es. 2.1" data-requires-model />
+        </label>
+        <label class="full">
+          <span>Note</span>
+          <textarea id="note" class="note" placeholder="Annotazioni..." data-requires-model></textarea>
+        </label>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Motori inseriti</div>
+      </div>
+      <div class="sections">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Identificativo</th>
+              <th>Marca</th>
+              <th>Modello</th>
+              <th>Potenza (kW)</th>
+              <th>Tensione (V)</th>
+              <th>Corrente (A)</th>
+              <th>TIPO RAFFREDAMENTO</th>
+              <th>Tensione prova (V)</th>
+              <th>Resistenza (MΩ)</th>
+              <th>Esito IR</th>
+              <th>Indice pol.</th>
+              <th>Esito PI</th>
+              <th>Note</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody id="lista-motori">
+            <tr>
+              <td colspan="14" class="muted">Nessun motore inserito.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title">
+    <div class="help-head">
+      <h2 class="help-title" id="help-title">Help</h2>
+      <form method="dialog">
+        <button class="btn" id="btn-help-close">✖️ Chiudi</button>
+      </form>
+    </div>
+    <div class="help-body" id="help-body"></div>
+  </dialog>
+
+  <template id="tpl-help-pi">
+    <table class="help-table">
+      <thead>
+        <tr>
+          <th>PI (IR 10 min / IR 1 min)</th>
+          <th>Valutazione</th>
+          <th>Condizione probabile isolamento</th>
+          <th>Azione consigliata</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>&lt; 1,0</strong></td>
+          <td><strong>❌ Inaccettabile</strong></td>
+          <td>Isolamento gravemente degradato o molto umido</td>
+          <td>NON rimettere in servizio. Ispezione immediata</td>
+        </tr>
+        <tr>
+          <td><strong>1,0 – 1,5</strong></td>
+          <td><strong>⚠ Critico</strong></td>
+          <td>Umidità elevata, contaminazione, inizio degrado</td>
+          <td>Asciugatura + nuova prova</td>
+        </tr>
+        <tr>
+          <td><strong>1,5 – 2,0</strong></td>
+          <td><strong>⚠ Borderline</strong></td>
+          <td>Isolamento ancora utilizzabile ma non sano</td>
+          <td>Monitoraggio ravvicinato</td>
+        </tr>
+        <tr>
+          <td><strong>2,0 – 4,0</strong></td>
+          <td><strong>✅ Buono</strong></td>
+          <td>Isolamento in buone condizioni</td>
+          <td>OK per esercizio</td>
+        </tr>
+        <tr>
+          <td><strong>&gt; 4,0</strong></td>
+          <td><strong>🟢 Ottimo</strong></td>
+          <td>Isolamento asciutto e stabile</td>
+          <td>Stato eccellente</td>
+        </tr>
+      </tbody>
+    </table>
+  </template>
+
+  <template id="tpl-help-ir">
+    <table class="help-table">
+      <thead>
+        <tr>
+          <th>IR [MΩ]</th>
+          <th>Valutazione</th>
+          <th>Condizione isolamento</th>
+          <th>Azione consigliata</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>&lt; 1</strong></td>
+          <td><strong>❌ Inaccettabile</strong></td>
+          <td>Isolamento compromesso</td>
+          <td>NON avviare il motore</td>
+        </tr>
+        <tr>
+          <td><strong>1 – 5</strong></td>
+          <td><strong>⚠ Molto basso</strong></td>
+          <td>Umido o degradato</td>
+          <td>Asciugatura / verifica</td>
+        </tr>
+        <tr>
+          <td><strong>5 – 10</strong></td>
+          <td><strong>⚠ Basso</strong></td>
+          <td>Accettabile solo temporaneamente</td>
+          <td>Monitorare trend</td>
+        </tr>
+        <tr>
+          <td><strong>10 – 50</strong></td>
+          <td><strong>✅ Adeguato</strong></td>
+          <td>Isolamento funzionale</td>
+          <td>OK con controlli periodici</td>
+        </tr>
+        <tr>
+          <td><strong>50 – 100</strong></td>
+          <td><strong>🟢 Buono</strong></td>
+          <td>Isolamento sano</td>
+          <td>Nessuna azione</td>
+        </tr>
+        <tr>
+          <td><strong>&gt; 100</strong></td>
+          <td><strong>🟢 Ottimo</strong></td>
+          <td>Isolamento eccellente</td>
+          <td>Stato ideale</td>
+        </tr>
+      </tbody>
+    </table>
+  </template>
+
+  <template id="tpl-help-voltage">
+    <table class="help-table">
+      <thead>
+        <tr>
+          <th>Tensione nominale motore</th>
+          <th>Tensione di prova IR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>≤ 400 V</strong></td>
+          <td><strong>500 V DC</strong></td>
+        </tr>
+        <tr>
+          <td><strong>400 – 1.000 V</strong></td>
+          <td><strong>1.000 V DC</strong></td>
+        </tr>
+        <tr>
+          <td><strong>&gt; 1.000 V</strong></td>
+          <td><strong>secondo specifica / norma</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </template>
+
+  <template id="tpl-help-guide">
+    <ol class="help-steps">
+      <li>
+        <strong>1️⃣ Prima della misura</strong><br />
+        Motore fuori servizio<br />
+        Sezionato e scollegato<br />
+        Verifica assenza tensione<br />
+        Carcassa collegata a terra
+      </li>
+      <li>
+        <strong>2️⃣ Tensione di prova</strong><br />
+        Motori ≤ 400 V → 500 V DC<br />
+        Motori 400–1000 V → 1000 V DC<br />
+        Motori &gt; 1000 V → secondo norma (IEEE 43)
+      </li>
+      <li>
+        <strong>3️⃣ Collegamenti</strong><br />
+        Puntale + → fase (U / V / W)<br />
+        Puntale – → terra<br />
+        Misurare una fase alla volta
+      </li>
+      <li>
+        <strong>4️⃣ Esecuzione</strong><br />
+        Avviare la prova<br />
+        Registrare IR a 1 min<br />
+        Registrare IR a 10 min<br />
+        Non interrompere prima del tempo
+      </li>
+      <li>
+        <strong>5️⃣ Fine prova</strong><br />
+        Scaricare avvolgimenti a terra<br />
+        Ripristinare collegamenti<br />
+        Compilare report
+      </li>
+    </ol>
+  </template>
+
+  <footer class="app-footer">Generatore Report Isolamento Motori v1.0.0</footer>
+
+  <script src="lib/jspdf.umd.min.js"></script>
+  <script src="lib/jspdf.plugin.autotable.min.js"></script>
+  <script src="js/pdf.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/actions.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
